@@ -1,0 +1,40 @@
+project: "Peterwolf's-Apollo-11"
+product: "Minecraft Fabric mod"
+target_minecraft: "26.3"
+status: discover-draft
+vision: >-
+  Deliver a staged, playable lunar exploration experience: build a launch site and
+  Saturn-V-inspired rocket, travel from Earth to the Moon, explore a low-gravity
+  cratered lunar surface in a spacesuit and rover, encounter aliens on the dark
+  side, and earn rare valuable rewards. A later stage expands the experience to
+  an ISS-like orbital station.
+player_experience:
+  - Craft launch-platform components, rocket, lunar lander, astronaut suit, and rover.
+  - Launch and experience a transition showing the blue-green Earth receding through a window.
+  - Land on a gray, cratered Moon with visibly reduced gravity.
+  - Operate an Apollo Guidance Computer-inspired lunar-lander navigation console with three in-game command-selected difficulties: EASY (automatic landing), MID (hints), and PROFESSIONAL (highest difficulty), drawing on the historical Apollo 11 Lunar Module software (Luminary 1A / Luminary099).
+  - Explore the dark side by rover, encounter alien life, and obtain a rare valuable reward.
+  - In a later stage, visit an ISS-inspired space station.
+  - Treat visual quality as a core differentiator: deliver polished, high-quality models and space visuals, with compatibility for BSL Shaders through Iris where available.
+  - Make major player-built lunar structures appear as visible silhouettes/landmarks on the Moon when viewed from Earth; the hidden Mickey-like test fixture must have ears protruding beyond the lunar disc outline.
+visual_direction:
+  references:
+    - "Screenshot 2026-10-09 at 19.09.30.png: Saturn V launch illustration"
+    - "Screenshot 2026-10-09 at 19.10.04.png: lunar lander, astronaut, rover, surface"
+    - "Screenshot 2026-10-09 at 19.10.16.png: astronaut suit"
+    - "Screenshot 2026-10-09 at 19.12.11.png: launch gantry and rocket"
+    - "Screenshot 2026-10-09 at 19.12.26.png: ISS over Earth"
+    - "Screenshot 2026-10-09 at 19.28.34.png: large-eyed alien in space"
+    - "Screenshot 2026-10-09 at 19.28.44.png: green alien close-up"
+    - "Screenshot 2026-10-09 at 19.44.58.png: detailed blue-green Earth against black space; use as a key target for the Earth-in-space visual"
+  intent: "Use as visual reference for original high-quality, Minecraft-compatible 3D assets; do not assume the screenshots themselves are distributable mod assets. Visual polish and BSL Shaders compatibility are primary product differentiators."
+open_questions:
+  - "What acceptance criteria should define the later ISS stage?"
+  - "Should assets be built as custom Java models, Blockbench-exported models, or a mix?"
+  - "What should the rare alien reward do, and should aliens be hostile, neutral, or both?"
+  - "What detailed control mechanics and recovery rules should PROFESSIONAL navigation use?"
+  - "What qualifies as a major lunar structure, and should its Earth-visible silhouette update immediately or after a delay?"
+constraints:
+  - "Fabric on Minecraft 26.3."
+  - "Local folder is connected to https://github.com/peterwolf-pl/peterwolfs-apollo-11/ on main (tracking origin/main); the remote contains LICENSE.md. Local screenshots and discovery specs are untracked; no mod source or build files exist yet."
+  - "Preserve the user's Polish-language project intent and visual references."

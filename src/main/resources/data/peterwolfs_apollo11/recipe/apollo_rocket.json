@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": "peterwolfs_apollo11:rocket_engine",
+    "F": "peterwolfs_apollo11:rocket_frame",
+    "G": "peterwolfs_apollo11:guidance_computer"
+  },
+  "pattern": [
+    " E ",
+    " F ",
+    " G "
+  ],
+  "result": {
+    "id": "peterwolfs_apollo11:apollo_rocket"
+  }
+}

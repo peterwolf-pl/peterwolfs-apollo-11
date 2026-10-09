@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "peterwolfs_apollo11_test",
+  "version": "1.0.0",
+  "name": "Peterwolf's Apollo 11 GameTests",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "pl.peterwolf.apollo11.test.ItemRegistrationGameTest"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.3",
+    "fabric-api": "*",
+    "peterwolfs_apollo11": "*"
+  }
+}

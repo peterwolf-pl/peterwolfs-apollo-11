@@ -1,0 +1,9 @@
+{
+  "modmenu.nameTranslation.peterwolfs_apollo11": "Apollo 11 Petera Wolfa",
+  "item.peterwolfs_apollo11.rocket_frame": "Rama konstrukcyjna rakiety",
+  "item.peterwolfs_apollo11.rocket_engine": "Silnik rakietowy",
+  "item.peterwolfs_apollo11.guidance_computer": "Komputer naprowadzania Apollo",
+  "item.peterwolfs_apollo11.apollo_rocket": "Rakieta Saturn V",
+  "item.peterwolfs_apollo11.launch_gantry": "Wieża startowa Apollo",
+  "block.peterwolfs_apollo11.launch_gantry": "Wieża startowa Apollo"
+}

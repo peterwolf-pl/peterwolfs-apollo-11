@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:iron_chain"
+  },
+  "pattern": [
+    "I I",
+    "ICI",
+    "I I"
+  ],
+  "result": {
+    "id": "peterwolfs_apollo11:launch_gantry"
+  }
+}

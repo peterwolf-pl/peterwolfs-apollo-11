@@ -1,0 +1,18 @@
+project: "Peterwolf's-Apollo-11"
+project_cycle:
+  current_phase: 2
+  completed_phases:
+    - 1
+  mode: standard
+  status: in_progress
+active_flow: orchestrate_project
+active_epic_id: null
+handoff:
+  last_step_completed: "Added a data-driven Moon dimension and server-authoritative launch transfer; client GameTest verifies rocket consumption, countdown completion, Moon arrival, and gray landing surface. Multiplayer decision confirmed: single-player plus dedicated servers, with only the launch initiator transferred. This is a test-surface prototype; elaboration and remaining mission features stay open"
+  open_decisions:
+    - "Choose model authoring pipeline; recommended default is Blockbench source with game-native exported models and no runtime modeling dependency"
+    - "Define alien behavior and valuable reward"
+    - "Specify detailed PROFESSIONAL navigation controls and risk; EASY auto-lands, MID provides hints"
+    - "Design the lunar surface-to-Moon-sprite pixel projection, visibility/threshold rules, and hidden Mickey-like regression fixture command"
+    - "Verify Iris + BSL compatibility with Minecraft 26.3 before implementation"
+  next_skill: model-domain

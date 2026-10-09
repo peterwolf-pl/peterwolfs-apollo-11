@@ -1,0 +1,7 @@
+{
+  "parent": "peterwolfs_apollo11:item/launch_gantry",
+  "textures": {
+    "particle": "peterwolfs_apollo11:block/launch_gantry",
+    "skin": "peterwolfs_apollo11:block/launch_gantry"
+  }
+}

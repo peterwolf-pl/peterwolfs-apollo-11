@@ -1,0 +1,22 @@
+{
+  "projectId": null,
+  "title": "Peterwolf's Apollo 11",
+  "summary": "Build and fly an Apollo-inspired mission from Earth to the Moon.",
+  "description": "# Peterwolf's Apollo 11\n\nA Fabric mod for Minecraft 26.3, focused on an Apollo-inspired mission from Earth to the Moon.\n\n## Development setup\n\n- Java 25\n- Gradle Wrapper 9.5.1\n- Minecraft 26.3, Fabric Loader 0.19.5, Fabric API 0.162.0+26.3, Fabric Loom 1.17.21\n\nOn macOS with Homebrew's `openjdk@25`, set `JAVA_HOME` before running Gradle:\n\n```sh\nexport JAVA_HOME=\"/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home\"\n./gradlew build\n./gradlew runClient\n```\n\nMinecraft 26.3's client jar already contains Mojang-named classes and its version manifest has no Mojang mapping downloads. The build therefore uses Fabric's empty `intermediary:0.0.0` mapping artifact and keeps Fabric API on the regular runtime/compile classpath rather than asking Loom to remap its sources. The dev client has been smoke-tested with Fabric API 0.162.0+26.3.\n\n## Tests\n\nRun the client GameTests with:\n\n```sh\n./gradlew runClientGameTest\n```\n\nThe test covers item and recipe resources, placeable gantry registration, the five-second launch countdown, and transfer to the Moon dimension's safe landing surface.\n\n## Current milestone\n\nThe first crafting slice adds a rocket frame, engine, and Apollo Guidance Computer, then recipes for the Saturn V rocket and a placeable launch gantry. Use the Apollo rocket on the gantry to consume it and start a five-second countdown with smoke, flame, and launch sound. Liftoff transfers the initiating player to a simple gray Moon test dimension. The Earth-through-window transition, cratered terrain, reduced gravity, navigation computer, suit, rover, and alien encounters remain future slices. The ISS remains deferred; shader packs are optional and are not bundled.\n",
+  "enabled": false,
+  "releaseType": "alpha",
+  "changelogType": "markdown",
+  "changelog": "",
+  "publishedVersion": null,
+  "manualRelease": false,
+  "media": {
+    "youtube": [],
+    "gallery": []
+  },
+  "dependencies": [
+    {
+      "slug": "fabric-api",
+      "type": "requiredDependency"
+    }
+  ]
+}

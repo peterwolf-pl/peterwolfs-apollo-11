@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "peterwolfs_apollo11",
+  "version": "${version}",
+  "name": "Peterwolf's Apollo 11",
+  "description": "Build and fly an Apollo-inspired mission from Earth to the Moon.",
+  "authors": ["Peter Wolf"],
+  "environment": "*",
+  "entrypoints": {
+    "main": ["pl.peterwolf.apollo11.Apollo11"],
+    "client": ["pl.peterwolf.apollo11.client.Apollo11Client"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

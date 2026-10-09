@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "peterwolfs_apollo11:block/launch_gantry"
+    }
+  }
+}

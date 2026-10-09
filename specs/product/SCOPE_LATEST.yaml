@@ -1,0 +1,65 @@
+project: "Peterwolf's-Apollo-11"
+status: planning-draft
+core_value: "Give Minecraft players a visually memorable, craftable Apollo-inspired Moon expedition with meaningful lunar exploration and an Apollo-style landing challenge."
+summary: >-
+  The first playable milestone delivers an end-to-end Moon mission in Minecraft Fabric 26.3:
+  build a launch site and spacecraft, launch from Earth, see Earth recede through a window,
+  land with the help of an AGC-inspired computer, and explore a low-gravity cratered Moon
+  in a suit and rover. Dark-side alien encounters provide a rare, valuable reward.
+  Visual quality is a primary differentiator, including optional BSL shader compatibility.
+  A later milestone adds an ISS-inspired station.
+in_scope:
+  - id: e01
+    item: "Create and verify a clean Minecraft 26.3 Fabric project that builds and launches."
+  - id: e02
+    item: "Implement craftable launch-platform components and a complete Saturn-V-inspired rocket/lander assembly with recipes."
+  - id: e03
+    item: "Implement launch, travel, the Earth-receding window view, and lunar landing."
+  - id: e04
+    item: "Implement the Apollo Guidance Computer-inspired landing computer with command-selected EASY (automatic landing), MID (hints), and PROFESSIONAL (highest/manual difficulty) modes."
+  - id: e05
+    item: "Implement the gray cratered Moon, reduced gravity, astronaut suit, and drivable lunar rover."
+  - id: e06
+    item: "Implement dark-side alien encounters and a rare valuable reward."
+  - id: e07
+    item: "Deliver original high-quality Minecraft-scale models, textures, and space visuals guided by the eight screenshots in the project root."
+  - id: e08
+    item: "Support optional Iris + BSL shader use while keeping all core visuals playable with shaders disabled. Do not bundle BSL."
+  - id: e09
+    item: "Map player-built lunar shapes to the small square Moon sprite visible from Earth, allowing the test shape's ears to protrude beyond the Moon's round outline."
+  - id: e10
+    item: "Provide a hidden, development/test-only command that creates the Mickey-like ears-and-muzzle lunar projection fixture; it must not be normal gameplay content."
+out_of_scope:
+  - item: "ISS gameplay in the first playable milestone."
+    reason: "User described the station as the next stage after the Moon expedition."
+  - item: "Full real-world orbital mechanics or n-body simulation."
+    reason: "A focused, fun lunar gameplay loop is the first milestone; full physics would add risk without being required for the stated experience."
+  - item: "Executing the original Apollo AGC source as a runtime dependency."
+    reason: "Use Luminary099 as historical inspiration; a literal emulator is not yet justified by gameplay or feasibility."
+  - item: "Shipping screenshots, Mickey-like fixture content, or third-party BSL shader files as mod assets."
+    reason: "Screenshots are references; the test fixture is developer-only; BSL is separately installed by players."
+constraints:
+  - "Target Minecraft 26.3, Fabric Loader 0.19.5, Loom 1.17.21, Fabric API 0.162.0+26.3, Gradle wrapper 9.5.1, and Java 25."
+  - "Vanilla rendering must work without shader mods; Iris + BSL is optional and requires in-game validation."
+  - "Use original game assets guided by user references; do not copy screenshot imagery into the resource pack."
+  - "Support single-player and dedicated-server multiplayer; launch and landing are server-authoritative, and only the initiating player transfers during a launch."
+  - "Lunar surface-to-sky-sprite mapping and the ears-outside-disc effect are a high-risk visual feature and need a prototype before being accepted as proven."
+  - "Current Git remote is https://github.com/peterwolf-pl/peterwolfs-apollo-11.git; local screenshot references are excluded from version control."
+success_criteria:
+  - "The Fabric 26.3 dev client builds and starts; core mission content works with shaders disabled."
+  - "Players can craft the platform, rocket/lander, suit, and rover from documented recipes."
+  - "Players can launch, experience the receding-Earth view, land, and explore under reduced lunar gravity."
+  - "Landing modes are observably distinct: EASY auto-lands, MID offers hints, PROFESSIONAL is the highest-difficulty manual mode."
+  - "The first mission includes rover-capable dark-side exploration, alien encounters, and a rare valuable reward."
+  - "A hidden test command generates a near-side lunar test shape whose mapped ears visibly protrude outside the Moon disc; projection works without shaders and is checked with Iris + BSL if supported on 26.3."
+  - "Original assets are visually coherent, readable at Minecraft scale, and tested with shaders disabled and with optional Iris + BSL."
+  - "ISS is explicitly deferred from the first milestone."
+references:
+  - "specs/requirements/VISION_LATEST.yaml"
+  - "specs/plans/TECH_STACK_LATEST.md"
+  - "specs/adr/0001-visual-pipeline-and-bsl-compatibility.md"
+  - "specs/adr/0002-lander-navigation-difficulty.md"
+  - "specs/adr/0003-lunar-landmarks-visible-from-earth.md"
+  - "specs/adr/0004-server-authoritative-multiplayer.md"
+  - "Apollo 11 AGC source: https://github.com/chrislgarry/Apollo-11"
+  - "Iris Shaders: https://irisshaders.dev/"
