@@ -1,0 +1,9 @@
+{
+  "modmenu.nameTranslation.peterwolfs_apollo11": "Peterwolf's Apollo 11",
+  "item.peterwolfs_apollo11.rocket_frame": "Rocket Structural Frame",
+  "item.peterwolfs_apollo11.rocket_engine": "Rocket Engine",
+  "item.peterwolfs_apollo11.guidance_computer": "Apollo Guidance Computer",
+  "item.peterwolfs_apollo11.apollo_rocket": "Saturn V Rocket",
+  "item.peterwolfs_apollo11.launch_gantry": "Apollo Launch Gantry",
+  "block.peterwolfs_apollo11.launch_gantry": "Apollo Launch Gantry"
+}

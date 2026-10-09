@@ -1,0 +1,15 @@
+# Gradle / Loom
+.gradle/
+build/
+run/
+
+# IDEs and OS files
+.idea/
+*.iml
+.DS_Store
+
+# Local reference screenshots (not distributed assets)
+/Screenshot 2026-10-09 at *.png
+
+# Generated local knowledge graph
+/graphify-out/
