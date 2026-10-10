@@ -126,6 +126,16 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
             require(commandStarted, "The /apollo launch command did not start the nearby gantry");
 
             context.waitTicks(105);
+            int manualBurnAccepted = world.getServer().computeOnServer(server -> {
+                try {
+                    return server.getCommands().getDispatcher().execute("apollo landing burn",
+                            server.getPlayerList().getPlayers().get(0).createCommandSourceStack());
+                } catch (com.mojang.brigadier.exceptions.CommandSyntaxException exception) {
+                    return 0;
+                }
+            });
+            require(manualBurnAccepted == 1,
+                    "Professional landing did not accept the required manual retrograde burn");
             boolean flightWindowActive = context.computeOnClient(client -> FlightWindowHud.isActive());
             boolean flightStillInProgress = world.getServer().computeOnServer(
                     server -> LaunchSequence.isActive(server.overworld(), pos)
