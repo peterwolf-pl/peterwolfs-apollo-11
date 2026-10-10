@@ -6,7 +6,8 @@
   "environment": "client",
   "entrypoints": {
     "fabric-client-gametest": [
-      "pl.peterwolf.apollo11.test.ItemRegistrationGameTest"
+      "pl.peterwolf.apollo11.test.ItemRegistrationGameTest",
+      "pl.peterwolf.apollo11.test.ProfessionalAbortGameTest"
     ]
   },
   "depends": {

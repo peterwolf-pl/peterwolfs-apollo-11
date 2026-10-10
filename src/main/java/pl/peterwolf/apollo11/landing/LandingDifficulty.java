@@ -14,4 +14,20 @@ public enum LandingDifficulty {
     public String id() {
         return name().toLowerCase(Locale.ROOT);
     }
+
+    public LandingOutcome resolveLanding(boolean manualBurnApplied) {
+        return switch (this) {
+            case EASY -> LandingOutcome.AUTOPILOT;
+            case MID -> manualBurnApplied ? LandingOutcome.ASSISTED_MANUAL : LandingOutcome.ASSISTED_AUTOPILOT;
+            case PROFESSIONAL -> manualBurnApplied ? LandingOutcome.MANUAL : LandingOutcome.ABORTED;
+        };
+    }
+
+    public enum LandingOutcome {
+        AUTOPILOT,
+        ASSISTED_AUTOPILOT,
+        ASSISTED_MANUAL,
+        MANUAL,
+        ABORTED
+    }
 }

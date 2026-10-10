@@ -16,5 +16,18 @@
   "command.peterwolfs_apollo11.difficulty.invalid": "Wybierz easy, mid lub professional.",
   "apollo.peterwolfs_apollo11.difficulty.easy": "Łatwy",
   "apollo.peterwolfs_apollo11.difficulty.mid": "Średni",
-  "apollo.peterwolfs_apollo11.difficulty.professional": "Profesjonalny"
+  "apollo.peterwolfs_apollo11.difficulty.professional": "Profesjonalny",
+  "command.peterwolfs_apollo11.landing.usage": "Podczas lotu wpisz /apollo landing burn, aby wykonać ręczny manewr retro.",
+  "landing.peterwolfs_apollo11.approach.easy": "Autopilot prowadzi lądownik do lądowania.",
+  "landing.peterwolfs_apollo11.approach.mid": "Aktywne wskazówki. Opcjonalnie wpisz /apollo landing burn; autopilot pomoże w lądowaniu.",
+  "landing.peterwolfs_apollo11.approach.professional": "Ręczne lądowanie. Wykonaj /apollo landing burn przed przyziemieniem.",
+  "landing.peterwolfs_apollo11.burn.no_descent": "Nie trwa lot translunarny.",
+  "landing.peterwolfs_apollo11.burn.autopilot": "Autopilot EASY steruje tym manewrem.",
+  "landing.peterwolfs_apollo11.burn.already": "Manewr retro został już przyjęty.",
+  "landing.peterwolfs_apollo11.burn.accepted": "Manewr retro przyjęty; lądownik ustabilizowany.",
+  "landing.peterwolfs_apollo11.result.autopilot": "Autopilot zakończył lądowanie.",
+  "landing.peterwolfs_apollo11.result.assisted": "Komputer skorygował zejście; lądowanie wspomagane zakończone.",
+  "landing.peterwolfs_apollo11.result.assisted_manual": "Ręczny manewr przyjęty; komputer wsparł lądowanie.",
+  "landing.peterwolfs_apollo11.result.manual": "Manewr retro potwierdzony; lądowanie zakończone.",
+  "landing.peterwolfs_apollo11.abort": "Nieudane lądowanie PROFESSIONAL: brak manewru retro. Awaryjny powrót na miejsce startu."
 }

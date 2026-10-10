@@ -8,11 +8,11 @@ project_cycle:
 active_flow: orchestrate_project
 active_epic_id: null
 handoff:
-  last_step_completed: "Added /apollo launch and a per-player session-scoped /apollo difficulty selector (easy/mid/professional), plus the Earth-receding five-second cockpit HUD; client GameTest verifies difficulty selection, command and gantry starts, loaded GUI sprite, flight overlay, Moon arrival, cratered surface, and one-sixth gravity. Difficulty-specific landing behavior is still open. Multiplayer is confirmed; ELABORATE and remaining mission features stay open"
+  last_step_completed: "Implemented difficulty-aware lunar outcomes: EASY auto-lands, MID offers an optional manual burn with autopilot correction, and PROFESSIONAL requires /apollo landing burn or safely returns to the launch position. Client GameTest verified the manual-burn path and all four outcome rules; ./gradlew runClientGameTest passes. Multiplayer remains server-authoritative; ELABORATE and other mission features stay open"
   open_decisions:
     - "Choose model authoring pipeline; recommended default is Blockbench source with game-native exported models and no runtime modeling dependency"
     - "Define alien behavior and valuable reward"
-    - "Specify detailed PROFESSIONAL navigation controls and risk; EASY auto-lands, MID provides hints"
+    - "Define additional PROFESSIONAL AGC/DSKY navigation controls beyond the first manual retrograde burn"
     - "Design the lunar surface-to-Moon-sprite pixel projection, visibility/threshold rules, and hidden Mickey-like regression fixture command"
     - "Verify Iris + BSL compatibility with Minecraft 26.3 before implementation"
   next_skill: model-domain

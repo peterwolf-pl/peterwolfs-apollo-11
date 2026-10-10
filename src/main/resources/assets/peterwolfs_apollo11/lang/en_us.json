@@ -16,5 +16,18 @@
   "command.peterwolfs_apollo11.difficulty.invalid": "Use easy, mid, or professional.",
   "apollo.peterwolfs_apollo11.difficulty.easy": "Easy",
   "apollo.peterwolfs_apollo11.difficulty.mid": "Mid",
-  "apollo.peterwolfs_apollo11.difficulty.professional": "Professional"
+  "apollo.peterwolfs_apollo11.difficulty.professional": "Professional",
+  "command.peterwolfs_apollo11.landing.usage": "Use /apollo landing burn during translunar flight to apply a manual retrograde burn.",
+  "landing.peterwolfs_apollo11.approach.easy": "Autopilot is handling the descent.",
+  "landing.peterwolfs_apollo11.approach.mid": "Guidance is active. Optional input: /apollo landing burn; autopilot will assist.",
+  "landing.peterwolfs_apollo11.approach.professional": "Manual descent is active. Apply /apollo landing burn before touchdown.",
+  "landing.peterwolfs_apollo11.burn.no_descent": "No active translunar descent.",
+  "landing.peterwolfs_apollo11.burn.autopilot": "The EASY autopilot is handling this burn.",
+  "landing.peterwolfs_apollo11.burn.already": "Retrograde burn already accepted.",
+  "landing.peterwolfs_apollo11.burn.accepted": "Retrograde burn accepted; descent stabilized.",
+  "landing.peterwolfs_apollo11.result.autopilot": "Autopilot landing complete.",
+  "landing.peterwolfs_apollo11.result.assisted": "Guidance computer corrected the descent; assisted landing complete.",
+  "landing.peterwolfs_apollo11.result.assisted_manual": "Guided manual burn confirmed; assisted landing complete.",
+  "landing.peterwolfs_apollo11.result.manual": "Manual retrograde burn verified; touchdown complete.",
+  "landing.peterwolfs_apollo11.abort": "Professional landing failed: no retrograde burn. Emergency abort returned you to the launch site."
 }

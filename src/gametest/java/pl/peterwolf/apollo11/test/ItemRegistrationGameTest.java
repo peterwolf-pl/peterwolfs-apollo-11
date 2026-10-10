@@ -45,6 +45,19 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
 
     @Override
     public void runTest(ClientGameTestContext context) {
+        require(LandingDifficulty.EASY.resolveLanding(false) == LandingDifficulty.LandingOutcome.AUTOPILOT,
+                "EASY must select automatic landing");
+        require(LandingDifficulty.MID.resolveLanding(false)
+                        == LandingDifficulty.LandingOutcome.ASSISTED_AUTOPILOT,
+                "MID must select an assisted landing");
+        require(LandingDifficulty.MID.resolveLanding(true)
+                        == LandingDifficulty.LandingOutcome.ASSISTED_MANUAL,
+                "MID must retain guidance while accepting an optional manual burn");
+        require(LandingDifficulty.PROFESSIONAL.resolveLanding(true) == LandingDifficulty.LandingOutcome.MANUAL,
+                "PROFESSIONAL must accept a completed manual burn");
+        require(LandingDifficulty.PROFESSIONAL.resolveLanding(false) == LandingDifficulty.LandingOutcome.ABORTED,
+                "PROFESSIONAL must abort safely when the manual burn is missed");
+
         for (int i = 0; i < ITEM_NAMES.length; i++) {
             String name = ITEM_NAMES[i];
             Identifier itemId = Identifier.fromNamespaceAndPath(Apollo11.MOD_ID, name);

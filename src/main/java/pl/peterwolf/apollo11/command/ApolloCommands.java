@@ -32,7 +32,13 @@ public final class ApolloCommands {
                                 .then(Commands.argument("mode", StringArgumentType.word())
                                         .executes(context -> setDifficulty(
                                                 context.getSource().getPlayerOrException(),
-                                                StringArgumentType.getString(context, "mode")))))));
+                                                StringArgumentType.getString(context, "mode")))))
+                        .then(Commands.literal("landing")
+                                .requires(source -> source.getEntity() instanceof ServerPlayer)
+                                .executes(context -> showLandingHelp(context.getSource().getPlayerOrException()))
+                                .then(Commands.literal("burn")
+                                        .executes(context -> LaunchSequence.performLandingBurn(
+                                                context.getSource().getPlayerOrException()) ? 1 : 0)))));
     }
 
     private static int launch(ServerPlayer player) {
@@ -48,6 +54,11 @@ public final class ApolloCommands {
         }
 
         return LaunchSequence.begin(player, (ServerLevel) player.level(), gantry, player.getMainHandItem()) ? 1 : 0;
+    }
+
+    private static int showLandingHelp(ServerPlayer player) {
+        player.sendSystemMessage(Component.translatable("command.peterwolfs_apollo11.landing.usage"));
+        return 1;
     }
 
     private static int showDifficulty(ServerPlayer player) {

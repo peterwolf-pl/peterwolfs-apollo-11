@@ -22,6 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import pl.peterwolf.apollo11.ModBlocks;
 import pl.peterwolf.apollo11.ModItems;
+import pl.peterwolf.apollo11.landing.LandingDifficulty;
+import pl.peterwolf.apollo11.landing.LandingDifficulty.LandingOutcome;
+import pl.peterwolf.apollo11.landing.LandingDifficultyStore;
 import pl.peterwolf.apollo11.network.FlightStartPayload;
 import pl.peterwolf.apollo11.world.MoonDimension;
 import pl.peterwolf.apollo11.world.MoonTerrain;
@@ -56,7 +59,8 @@ public final class LaunchSequence {
         if (!player.getAbilities().instabuild) {
             rocketStack.shrink(1);
         }
-        ACTIVE_LAUNCHES.put(key, new ActiveLaunch(level, player.getUUID(), COUNTDOWN_TICKS));
+        ACTIVE_LAUNCHES.put(key, new ActiveLaunch(level, player.getUUID(), COUNTDOWN_TICKS,
+                LandingDifficultyStore.get(player), player.position(), player.getYRot(), player.getXRot()));
         player.sendSystemMessage(Component.literal("Launch sequence initiated. T-5 seconds."));
         emitExhaust(level, gantryPos, 8);
         return true;
@@ -64,6 +68,28 @@ public final class LaunchSequence {
 
     public static boolean isActive(ServerLevel level, BlockPos gantryPos) {
         return ACTIVE_LAUNCHES.containsKey(new LaunchKey(level.dimension(), gantryPos));
+    }
+
+    public static boolean performLandingBurn(ServerPlayer player) {
+        for (ActiveLaunch launch : ACTIVE_LAUNCHES.values()) {
+            if (!launch.playerId.equals(player.getUUID()) || !launch.flightStarted) {
+                continue;
+            }
+            if (launch.difficulty == LandingDifficulty.EASY) {
+                player.sendSystemMessage(Component.translatable("landing.peterwolfs_apollo11.burn.autopilot"));
+                return false;
+            }
+            if (launch.manualBurnApplied) {
+                player.sendSystemMessage(Component.translatable("landing.peterwolfs_apollo11.burn.already"));
+                return true;
+            }
+
+            launch.manualBurnApplied = true;
+            player.sendSystemMessage(Component.translatable("landing.peterwolfs_apollo11.burn.accepted"));
+            return true;
+        }
+        player.sendSystemMessage(Component.translatable("landing.peterwolfs_apollo11.burn.no_descent"));
+        return false;
     }
 
     private static void tick(MinecraftServer server) {
@@ -109,6 +135,8 @@ public final class LaunchSequence {
         if (player != null) {
             ServerPlayNetworking.send(player, new FlightStartPayload());
             player.sendSystemMessage(Component.literal("Liftoff! Earth is receding through the capsule window."));
+            player.sendSystemMessage(Component.translatable(
+                    "landing.peterwolfs_apollo11.approach." + launch.difficulty.id()));
         }
     }
 
@@ -116,6 +144,13 @@ public final class LaunchSequence {
         ServerPlayer player = server.getPlayerList().getPlayer(launch.playerId);
         ServerLevel moon = server.getLevel(MoonDimension.KEY);
         if (player == null) {
+            return;
+        }
+        LandingOutcome outcome = launch.difficulty.resolveLanding(launch.manualBurnApplied);
+        if (outcome == LandingOutcome.ABORTED) {
+            player.teleportTo(launch.level, launch.origin.x, launch.origin.y, launch.origin.z,
+                    Set.of(), launch.yRot, launch.xRot, false);
+            player.sendSystemMessage(Component.translatable("landing.peterwolfs_apollo11.abort"));
             return;
         }
         if (moon == null) {
@@ -127,7 +162,14 @@ public final class LaunchSequence {
         MoonTerrain.prepareLandingArea(moon);
         boolean arrived = player.teleportTo(moon, 0.5, 6.0, 0.5, Set.of(), player.getYRot(), player.getXRot(), false);
         if (arrived) {
-            player.sendSystemMessage(Component.literal("Liftoff! Lunar landing complete."));
+            String resultKey = switch (outcome) {
+                case AUTOPILOT -> "landing.peterwolfs_apollo11.result.autopilot";
+                case ASSISTED_AUTOPILOT -> "landing.peterwolfs_apollo11.result.assisted";
+                case ASSISTED_MANUAL -> "landing.peterwolfs_apollo11.result.assisted_manual";
+                case MANUAL -> "landing.peterwolfs_apollo11.result.manual";
+                case ABORTED -> throw new IllegalStateException("Aborted landings are handled before transfer");
+            };
+            player.sendSystemMessage(Component.translatable(resultKey));
         } else {
             player.sendSystemMessage(Component.literal("Liftoff! The Moon landing transfer failed."));
         }
@@ -157,13 +199,23 @@ public final class LaunchSequence {
     private static final class ActiveLaunch {
         private final ServerLevel level;
         private final UUID playerId;
+        private final LandingDifficulty difficulty;
+        private final Vec3 origin;
+        private final float yRot;
+        private final float xRot;
         private int ticksRemaining;
         private boolean flightStarted;
+        private boolean manualBurnApplied;
 
-        private ActiveLaunch(ServerLevel level, UUID playerId, int ticksRemaining) {
+        private ActiveLaunch(ServerLevel level, UUID playerId, int ticksRemaining, LandingDifficulty difficulty,
+                             Vec3 origin, float yRot, float xRot) {
             this.level = level;
             this.playerId = playerId;
             this.ticksRemaining = ticksRemaining;
+            this.difficulty = difficulty;
+            this.origin = origin;
+            this.yRot = yRot;
+            this.xRot = xRot;
         }
     }
 }
