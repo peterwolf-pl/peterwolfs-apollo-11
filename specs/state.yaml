@@ -8,7 +8,7 @@ project_cycle:
 active_flow: orchestrate_project
 active_epic_id: null
 handoff:
-  last_step_completed: "Added a data-driven Moon dimension and server-authoritative launch transfer; client GameTest verifies rocket consumption, countdown completion, Moon arrival, and gray landing surface. Multiplayer decision confirmed: single-player plus dedicated servers, with only the launch initiator transferred. This is a test-surface prototype; elaboration and remaining mission features stay open"
+  last_step_completed: "Added /apollo launch and a per-player session-scoped /apollo difficulty selector (easy/mid/professional), plus the Earth-receding five-second cockpit HUD; client GameTest verifies difficulty selection, command and gantry starts, loaded GUI sprite, flight overlay, Moon arrival, cratered surface, and one-sixth gravity. Difficulty-specific landing behavior is still open. Multiplayer is confirmed; ELABORATE and remaining mission features stay open"
   open_decisions:
     - "Choose model authoring pipeline; recommended default is Blockbench source with game-native exported models and no runtime modeling dependency"
     - "Define alien behavior and valuable reward"

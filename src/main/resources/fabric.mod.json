@@ -10,6 +10,7 @@
     "main": ["pl.peterwolf.apollo11.Apollo11"],
     "client": ["pl.peterwolf.apollo11.client.Apollo11Client"]
   },
+  "mixins": ["peterwolfs_apollo11.mixins.json"],
   "depends": {
     "fabricloader": ">=0.19.5",
     "minecraft": "26.3",

@@ -26,8 +26,8 @@ Run the client GameTests with:
 ./gradlew runClientGameTest
 ```
 
-The test covers item and recipe resources, placeable gantry registration, the five-second launch countdown, and transfer to the Moon dimension's safe landing surface.
+The test covers item and recipe resources, the placeable gantry, `/apollo launch`, `/apollo difficulty professional`, countdown, five-second Earth-receding flight HUD, GUI-atlas Earth sprite, Moon transfer, cratered landing area, and reduced gravity.
 
 ## Current milestone
 
-The first crafting slice adds a rocket frame, engine, and Apollo Guidance Computer, then recipes for the Saturn V rocket and a placeable launch gantry. Use the Apollo rocket on the gantry to consume it and start a five-second countdown with smoke, flame, and launch sound. Liftoff transfers the initiating player to a simple gray Moon test dimension. The Earth-through-window transition, cratered terrain, reduced gravity, navigation computer, suit, rover, and alien encounters remain future slices. The ISS remains deferred; shader packs are optional and are not bundled.
+The first crafting slice adds a rocket frame, engine, and Apollo Guidance Computer, then recipes for the Saturn V rocket and a placeable launch gantry. Use the Apollo rocket on the gantry to consume it and start a five-second countdown with smoke, flame, and launch sound. Alternatively, hold the rocket and run `/apollo launch` within four blocks of a gantry. The initiating player then sees a five-second cockpit HUD with a shrinking Earth sprite and distance/progress readout before transfer to the Moon's cratered test surface under one-sixth gravity. `/apollo difficulty [easy|mid|professional]` selects a per-player mode for the current server session; the difficulty modes do not yet change landing behavior. The astronaut suit, rover, and alien encounters remain future slices. The ISS remains deferred; shader packs are optional and are not bundled.

@@ -5,5 +5,16 @@
   "item.peterwolfs_apollo11.guidance_computer": "Apollo Guidance Computer",
   "item.peterwolfs_apollo11.apollo_rocket": "Saturn V Rocket",
   "item.peterwolfs_apollo11.launch_gantry": "Apollo Launch Gantry",
-  "block.peterwolfs_apollo11.launch_gantry": "Apollo Launch Gantry"
+  "block.peterwolfs_apollo11.launch_gantry": "Apollo Launch Gantry",
+  "hud.peterwolfs_apollo11.flight.title": "APOLLO 11 / TRANSLUNAR INSERTION",
+  "hud.peterwolfs_apollo11.flight.range": "EARTH RANGE: %s km",
+  "hud.peterwolfs_apollo11.flight.timer": "T+ 00:%s | LUNAR TRANSFER",
+  "command.peterwolfs_apollo11.launch.requires_rocket": "Hold an Apollo rocket in your main hand.",
+  "command.peterwolfs_apollo11.launch.no_gantry": "No launch gantry is nearby.",
+  "command.peterwolfs_apollo11.difficulty.current": "Landing difficulty: %s",
+  "command.peterwolfs_apollo11.difficulty.set": "Landing difficulty set to %s.",
+  "command.peterwolfs_apollo11.difficulty.invalid": "Use easy, mid, or professional.",
+  "apollo.peterwolfs_apollo11.difficulty.easy": "Easy",
+  "apollo.peterwolfs_apollo11.difficulty.mid": "Mid",
+  "apollo.peterwolfs_apollo11.difficulty.professional": "Professional"
 }

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.GameType;
@@ -20,9 +21,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.Item;
 import pl.peterwolf.apollo11.Apollo11;
+import pl.peterwolf.apollo11.client.FlightWindowHud;
 import pl.peterwolf.apollo11.ModBlocks;
 import pl.peterwolf.apollo11.block.LaunchGantryBlock;
 import pl.peterwolf.apollo11.ModItems;
+import pl.peterwolf.apollo11.landing.LandingDifficulty;
+import pl.peterwolf.apollo11.landing.LandingDifficultyStore;
 import pl.peterwolf.apollo11.launch.LaunchSequence;
 
 public final class ItemRegistrationGameTest implements FabricClientGameTest {
@@ -61,6 +65,14 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
         boolean blockstateExists = context.computeOnClient(client -> client.getResourceManager().getResource(
                 Identifier.fromNamespaceAndPath(Apollo11.MOD_ID, "blockstates/launch_gantry.json")).isPresent());
         require(blockstateExists, "Launch gantry blockstate resource is missing");
+        boolean earthTextureExists = context.computeOnClient(client -> client.getResourceManager().getResource(
+                Identifier.fromNamespaceAndPath(Apollo11.MOD_ID,
+                        "textures/gui/sprites/earth_globe.png")).isPresent());
+        require(earthTextureExists, "Earth flight-window texture is missing");
+        boolean earthSpriteLoaded = context.computeOnClient(client -> client.getAtlasManager().get(new SpriteId(
+                Identifier.withDefaultNamespace("textures/atlas/gui.png"),
+                Identifier.fromNamespaceAndPath(Apollo11.MOD_ID, "earth_globe"))) != null);
+        require(earthSpriteLoaded, "Earth flight-window sprite is missing from the GUI atlas");
 
         var modContainer = FabricLoader.getInstance().getModContainer(Apollo11.MOD_ID).orElseThrow();
         for (String recipeName : RECIPE_NAMES) {
@@ -72,6 +84,8 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
 
         try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(true).create()) {
             world.getConnection().waitForChunksDownload();
+            double overworldGravity = world.getServer().computeOnServer(
+                    server -> server.getPlayerList().getPlayers().get(0).getGravity());
             BlockPos pos = new BlockPos(0, 80, 0);
             boolean sequenceStarted = world.getServer().computeOnServer(server -> {
                 var level = server.overworld();
@@ -90,17 +104,54 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
             });
             require(sequenceStarted, "Using the Apollo rocket on the launch gantry did not start the countdown");
 
+            world.getServer().computeOnServer(server -> {
+                server.overworld().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+                return null;
+            });
+            context.waitTicks(1);
+            boolean commandStarted = world.getServer().computeOnServer(server -> {
+                var level = server.overworld();
+                level.setBlock(pos, ModBlocks.LAUNCH_GANTRY.defaultBlockState(), 3);
+                var player = server.getPlayerList().getPlayers().get(0);
+                player.teleportTo(0.5, 81.0, 0.5);
+                boolean startsEasy = LandingDifficultyStore.get(player) == LandingDifficulty.EASY;
+                server.getCommands().performPrefixedCommand(player.createCommandSourceStack(),
+                        "apollo difficulty professional");
+                boolean professionalSelected = LandingDifficultyStore.get(player) == LandingDifficulty.PROFESSIONAL;
+                player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.APOLLO_ROCKET));
+                server.getCommands().performPrefixedCommand(player.createCommandSourceStack(), "apollo launch");
+                return startsEasy && professionalSelected && LaunchSequence.isActive(level, pos)
+                        && player.getMainHandItem().isEmpty();
+            });
+            require(commandStarted, "The /apollo launch command did not start the nearby gantry");
+
             context.waitTicks(105);
+            boolean flightWindowActive = context.computeOnClient(client -> FlightWindowHud.isActive());
+            boolean flightStillInProgress = world.getServer().computeOnServer(
+                    server -> LaunchSequence.isActive(server.overworld(), pos)
+                            && server.getPlayerList().getPlayers().get(0).level() == server.overworld());
+            require(flightWindowActive && flightStillInProgress,
+                    "T-0 did not start the Earth-receding flight window before Moon transfer");
+
+            context.waitTicks(100);
             boolean sequenceCompleted = world.getServer().computeOnServer(
                     server -> !LaunchSequence.isActive(server.overworld(), pos));
-            require(sequenceCompleted, "Launch countdown did not complete after five seconds");
-            boolean arrivedOnMoon = world.getServer().computeOnServer(server -> {
+            require(sequenceCompleted, "Five-second translunar flight did not complete");
+            boolean lunarExperienceReady = world.getServer().computeOnServer(server -> {
                 var moon = server.getLevel(MOON_DIMENSION);
                 var player = server.getPlayerList().getPlayers().get(0);
                 return moon != null && player.level() == moon
-                        && moon.getBlockState(new BlockPos(0, 5, 0)).is(Blocks.CONCRETE.gray());
+                        && moon.getBlockState(new BlockPos(0, 5, 0)).is(Blocks.CONCRETE.gray())
+                        && Math.abs(player.getGravity() - overworldGravity / 6.0) < 1.0e-9
+                        && moon.getBlockState(new BlockPos(12, 5, 0)).isAir()
+                        && moon.getBlockState(new BlockPos(12, 3, 0)).is(Blocks.TUFF)
+                        && moon.getBlockState(new BlockPos(17, 6, 0)).is(Blocks.TUFF);
             });
-            require(arrivedOnMoon, "Launch completed without transferring the player to the Moon dimension");
+            require(lunarExperienceReady,
+                    "Moon landing did not provide one-sixth gravity, a safe landing pad, and generated craters");
+            context.waitTicks(2);
+            require(context.computeOnClient(client -> !FlightWindowHud.isActive()),
+                    "Earth-receding flight window remained open after Moon arrival");
         }
     }
 

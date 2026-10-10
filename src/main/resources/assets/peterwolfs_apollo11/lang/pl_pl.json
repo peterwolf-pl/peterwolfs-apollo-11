@@ -5,5 +5,16 @@
   "item.peterwolfs_apollo11.guidance_computer": "Komputer naprowadzania Apollo",
   "item.peterwolfs_apollo11.apollo_rocket": "Rakieta Saturn V",
   "item.peterwolfs_apollo11.launch_gantry": "Wieża startowa Apollo",
-  "block.peterwolfs_apollo11.launch_gantry": "Wieża startowa Apollo"
+  "block.peterwolfs_apollo11.launch_gantry": "Wieża startowa Apollo",
+  "hud.peterwolfs_apollo11.flight.title": "APOLLO 11 / LOT NA KSIĘŻYC",
+  "hud.peterwolfs_apollo11.flight.range": "ODLEGŁOŚĆ OD ZIEMI: %s km",
+  "hud.peterwolfs_apollo11.flight.timer": "T+ 00:%s | LOT TRANSLUNARNY",
+  "command.peterwolfs_apollo11.launch.requires_rocket": "Weź rakietę Apollo do głównej ręki.",
+  "command.peterwolfs_apollo11.launch.no_gantry": "W pobliżu nie ma wieży startowej.",
+  "command.peterwolfs_apollo11.difficulty.current": "Poziom trudności lądowania: %s",
+  "command.peterwolfs_apollo11.difficulty.set": "Ustawiono poziom trudności lądowania: %s.",
+  "command.peterwolfs_apollo11.difficulty.invalid": "Wybierz easy, mid lub professional.",
+  "apollo.peterwolfs_apollo11.difficulty.easy": "Łatwy",
+  "apollo.peterwolfs_apollo11.difficulty.mid": "Średni",
+  "apollo.peterwolfs_apollo11.difficulty.professional": "Profesjonalny"
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -21,10 +22,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import pl.peterwolf.apollo11.ModBlocks;
 import pl.peterwolf.apollo11.ModItems;
+import pl.peterwolf.apollo11.network.FlightStartPayload;
 import pl.peterwolf.apollo11.world.MoonDimension;
+import pl.peterwolf.apollo11.world.MoonTerrain;
 
 public final class LaunchSequence {
     private static final int COUNTDOWN_TICKS = 100;
+    private static final int FLIGHT_DURATION_TICKS = 100;
     private static final Map<LaunchKey, ActiveLaunch> ACTIVE_LAUNCHES = new HashMap<>();
 
     private LaunchSequence() {
@@ -75,27 +79,40 @@ public final class LaunchSequence {
                 continue;
             }
 
-            launch.ticksRemaining--;
-            if (launch.ticksRemaining > 0 && launch.ticksRemaining % 20 == 0) {
-                int secondsRemaining = launch.ticksRemaining / 20;
-                notifyPlayer(server, launch.playerId, "T-" + secondsRemaining + "...");
-                emitExhaust(launch.level, key.position(), 12);
-            } else if (launch.ticksRemaining <= 0) {
-                liftoff(server, key, launch);
+            if (!launch.flightStarted) {
+                launch.ticksRemaining--;
+                if (launch.ticksRemaining > 0 && launch.ticksRemaining % 20 == 0) {
+                    int secondsRemaining = launch.ticksRemaining / 20;
+                    notifyPlayer(server, launch.playerId, "T-" + secondsRemaining + "...");
+                    emitExhaust(launch.level, key.position(), 12);
+                } else if (launch.ticksRemaining <= 0) {
+                    beginFlight(server, key, launch);
+                    launch.flightStarted = true;
+                    launch.ticksRemaining = FLIGHT_DURATION_TICKS;
+                }
+            } else if (--launch.ticksRemaining <= 0) {
+                liftoff(server, launch);
                 iterator.remove();
             }
         }
     }
 
-    private static void liftoff(MinecraftServer server, LaunchKey key, ActiveLaunch launch) {
-        ServerLevel level = launch.level;
+    private static void beginFlight(MinecraftServer server, LaunchKey key, ActiveLaunch launch) {
         BlockPos pos = key.position();
         Vec3 center = Vec3.atCenterOf(pos);
-        level.sendParticles(ParticleTypes.CLOUD, center.x, pos.getY() + 1.0, center.z,
+        launch.level.sendParticles(ParticleTypes.CLOUD, center.x, pos.getY() + 1.0, center.z,
                 50, 0.8, 0.2, 0.8, 0.08);
-        level.sendParticles(ParticleTypes.FLAME, center.x, pos.getY() + 1.0, center.z,
+        launch.level.sendParticles(ParticleTypes.FLAME, center.x, pos.getY() + 1.0, center.z,
                 30, 0.45, 0.15, 0.45, 0.06);
-        level.playSound(null, pos, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.BLOCKS, 1.0F, 0.75F);
+        launch.level.playSound(null, pos, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.BLOCKS, 1.0F, 0.75F);
+        ServerPlayer player = server.getPlayerList().getPlayer(launch.playerId);
+        if (player != null) {
+            ServerPlayNetworking.send(player, new FlightStartPayload());
+            player.sendSystemMessage(Component.literal("Liftoff! Earth is receding through the capsule window."));
+        }
+    }
+
+    private static void liftoff(MinecraftServer server, ActiveLaunch launch) {
         ServerPlayer player = server.getPlayerList().getPlayer(launch.playerId);
         ServerLevel moon = server.getLevel(MoonDimension.KEY);
         if (player == null) {
@@ -107,6 +124,7 @@ public final class LaunchSequence {
         }
 
         moon.getChunk(0, 0);
+        MoonTerrain.prepareLandingArea(moon);
         boolean arrived = player.teleportTo(moon, 0.5, 6.0, 0.5, Set.of(), player.getYRot(), player.getXRot(), false);
         if (arrived) {
             player.sendSystemMessage(Component.literal("Liftoff! Lunar landing complete."));
@@ -140,6 +158,7 @@ public final class LaunchSequence {
         private final ServerLevel level;
         private final UUID playerId;
         private int ticksRemaining;
+        private boolean flightStarted;
 
         private ActiveLaunch(ServerLevel level, UUID playerId, int ticksRemaining) {
             this.level = level;
