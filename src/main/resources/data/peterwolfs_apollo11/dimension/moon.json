@@ -3,8 +3,8 @@
   "generator": {
     "type": "minecraft:flat",
     "settings": {
-      "biome": "minecraft:the_void",
-      "features": false,
+      "biome": "peterwolfs_apollo11:moon_surface",
+      "features": true,
       "lakes": false,
       "layers": [
         { "block": "minecraft:bedrock", "height": 1 },

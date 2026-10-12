@@ -12,6 +12,7 @@ import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.InteractionHand;
@@ -28,6 +29,7 @@ import pl.peterwolf.apollo11.ModItems;
 import pl.peterwolf.apollo11.landing.LandingDifficulty;
 import pl.peterwolf.apollo11.landing.LandingDifficultyStore;
 import pl.peterwolf.apollo11.launch.LaunchSequence;
+import pl.peterwolf.apollo11.world.MoonCraterFeature;
 
 public final class ItemRegistrationGameTest implements FabricClientGameTest {
     private static final ResourceKey<Level> MOON_DIMENSION = ResourceKey.create(Registries.DIMENSION,
@@ -57,6 +59,7 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
                 "PROFESSIONAL must accept a completed manual burn");
         require(LandingDifficulty.PROFESSIONAL.resolveLanding(false) == LandingDifficulty.LandingOutcome.ABORTED,
                 "PROFESSIONAL must abort safely when the manual burn is missed");
+        verifyCraterDistribution();
 
         for (int i = 0; i < ITEM_NAMES.length; i++) {
             String name = ITEM_NAMES[i];
@@ -86,6 +89,32 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
                 Identifier.withDefaultNamespace("textures/atlas/gui.png"),
                 Identifier.fromNamespaceAndPath(Apollo11.MOD_ID, "earth_globe"))) != null);
         require(earthSpriteLoaded, "Earth flight-window sprite is missing from the GUI atlas");
+        boolean cockpitSpriteLoaded = context.computeOnClient(client -> client.getAtlasManager().get(new SpriteId(
+                Identifier.withDefaultNamespace("textures/atlas/gui.png"),
+                Identifier.fromNamespaceAndPath(Apollo11.MOD_ID, "cockpit_panel"))) != null);
+        require(cockpitSpriteLoaded, "Cockpit panel sprite is missing from the GUI atlas");
+        boolean portholeIsTransparent = context.computeOnClient(client -> {
+            var resource = client.getResourceManager().getResource(Identifier.fromNamespaceAndPath(Apollo11.MOD_ID,
+                    "textures/gui/sprites/cockpit_panel.png")).orElseThrow();
+            try (var stream = resource.open()) {
+                var image = javax.imageio.ImageIO.read(stream);
+                if (image == null) {
+                    return false;
+                }
+                int centerX = image.getWidth() / 2;
+                int centerY = image.getHeight() / 2;
+                return image.getRGB(centerX, centerY) >>> 24 == 0
+                        && image.getRGB(centerX + 98, centerY) >>> 24 == 0
+                        && image.getRGB(centerX, centerY + 98) >>> 24 == 0
+                        && image.getRGB(centerX + 100, centerY) >>> 24 == 255
+                        && image.getRGB(centerX, centerY + 100) >>> 24 == 255
+                        && image.getRGB(0, 0) >>> 24 == 255;
+            } catch (java.io.IOException exception) {
+                return false;
+            }
+        });
+        require(portholeIsTransparent,
+                "Cockpit must have a transparent circular porthole with an opaque instrument panel");
 
         var modContainer = FabricLoader.getInstance().getModContainer(Apollo11.MOD_ID).orElseThrow();
         for (String recipeName : RECIPE_NAMES) {
@@ -94,6 +123,15 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
         }
         require(modContainer.findPath("data/" + Apollo11.MOD_ID + "/loot_table/blocks/launch_gantry.json").isPresent(),
                 "Launch gantry block loot table is missing");
+        require(modContainer.findPath("data/" + Apollo11.MOD_ID
+                        + "/worldgen/feature/moon_crater_field.json").isPresent(),
+                "Moon crater feature definition is missing");
+        require(modContainer.findPath("data/" + Apollo11.MOD_ID
+                        + "/worldgen/placed_feature/moon_crater_field.json").isPresent(),
+                "Moon crater placement definition is missing");
+        require(modContainer.findPath("data/" + Apollo11.MOD_ID
+                        + "/worldgen/biome/moon_surface.json").isPresent(),
+                "Moon-only crater biome definition is missing");
 
         try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(true).create()) {
             world.getConnection().waitForChunksDownload();
@@ -163,19 +201,72 @@ public final class ItemRegistrationGameTest implements FabricClientGameTest {
             boolean lunarExperienceReady = world.getServer().computeOnServer(server -> {
                 var moon = server.getLevel(MOON_DIMENSION);
                 var player = server.getPlayerList().getPlayers().get(0);
-                return moon != null && player.level() == moon
+                if (moon == null) {
+                    return false;
+                }
+                moon.getChunk(1, 0);
+                return player.level() == moon
                         && moon.getBlockState(new BlockPos(0, 5, 0)).is(Blocks.CONCRETE.gray())
-                        && Math.abs(player.getGravity() - overworldGravity / 6.0) < 1.0e-9
-                        && moon.getBlockState(new BlockPos(12, 5, 0)).isAir()
-                        && moon.getBlockState(new BlockPos(12, 3, 0)).is(Blocks.TUFF)
-                        && moon.getBlockState(new BlockPos(17, 6, 0)).is(Blocks.TUFF);
+                        && moon.getBlockState(new BlockPos(12, 5, 0)).is(Blocks.CONCRETE.gray())
+                        && moon.getBlockState(new BlockPos(30, 5, 0)).is(Blocks.CONCRETE.gray())
+                        && Math.abs(player.getGravity() - overworldGravity / 6.0) < 1.0e-9;
             });
             require(lunarExperienceReady,
-                    "Moon landing did not provide one-sixth gravity, a safe landing pad, and generated craters");
+                    "Moon landing did not provide one-sixth gravity and a safe landing pad");
+            int[] craterMetrics = world.getServer().computeOnServer(server -> {
+                var moon = server.getLevel(MOON_DIMENSION);
+                for (int chunkX = 2; chunkX <= 5; chunkX++) {
+                    for (int chunkZ = -2; chunkZ <= 1; chunkZ++) {
+                        moon.getChunk(chunkX, chunkZ);
+                    }
+                }
+                int changedSurfaceColumns = 0;
+                int craterFloors = 0;
+                int raisedRims = 0;
+                for (int x = 32; x < 96; x++) {
+                    for (int z = -32; z < 32; z++) {
+                        int surfaceY = moon.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1;
+                        if (surfaceY != 5) {
+                            changedSurfaceColumns++;
+                        }
+                        if (surfaceY < 5) {
+                            craterFloors++;
+                        } else if (surfaceY > 5) {
+                            raisedRims++;
+                        }
+                    }
+                }
+                return new int[] { changedSurfaceColumns, craterFloors, raisedRims };
+            });
+            require(craterMetrics[0] >= 60 && craterMetrics[1] > 0 && craterMetrics[2] > 0,
+                    "Moon world generation must create dense crater floors and raised rims; measured "
+                            + craterMetrics[0] + " changed columns, " + craterMetrics[1] + " floors, and "
+                            + craterMetrics[2] + " raised rims");
             context.waitTicks(2);
             require(context.computeOnClient(client -> !FlightWindowHud.isActive()),
                     "Earth-receding flight window remained open after Moon arrival");
         }
+    }
+
+    private static void verifyCraterDistribution() {
+        long seed = 0x4A_50_4F_4C_4C_4F_11L;
+        var first = MoonCraterFeature.craterForCell(seed, -7, 12);
+        var repeat = MoonCraterFeature.craterForCell(seed, -7, 12);
+        require(first.equals(repeat), "Crater centers and sizes must be deterministic for a world seed and cell");
+
+        boolean small = false;
+        boolean medium = false;
+        boolean large = false;
+        for (int cellX = -16; cellX <= 16; cellX++) {
+            for (int cellZ = -16; cellZ <= 16; cellZ++) {
+                int radius = MoonCraterFeature.craterForCell(seed, cellX, cellZ).radius();
+                small |= radius <= 5;
+                medium |= radius >= 6 && radius <= 11;
+                large |= radius >= 12;
+            }
+        }
+        require(small && medium && large,
+                "The crater field must include small, medium, and rare large impact basins");
     }
 
     private static void require(boolean condition, String message) {

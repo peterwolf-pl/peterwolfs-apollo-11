@@ -6,6 +6,7 @@ import pl.peterwolf.apollo11.command.ApolloCommands;
 import pl.peterwolf.apollo11.landing.LandingDifficultyStore;
 import pl.peterwolf.apollo11.launch.LaunchSequence;
 import pl.peterwolf.apollo11.network.FlightStartPayload;
+import pl.peterwolf.apollo11.world.MoonCraterFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ public final class Apollo11 implements ModInitializer {
     public void onInitialize() {
         ModBlocks.initialize();
         ModItems.initialize();
+        MoonCraterFeature.initialize();
         PayloadTypeRegistry.clientboundPlay().register(FlightStartPayload.TYPE, FlightStartPayload.CODEC);
         LaunchSequence.initialize();
         ApolloCommands.initialize();

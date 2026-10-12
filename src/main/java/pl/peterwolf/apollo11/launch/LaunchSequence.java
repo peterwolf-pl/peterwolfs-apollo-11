@@ -27,7 +27,6 @@ import pl.peterwolf.apollo11.landing.LandingDifficulty.LandingOutcome;
 import pl.peterwolf.apollo11.landing.LandingDifficultyStore;
 import pl.peterwolf.apollo11.network.FlightStartPayload;
 import pl.peterwolf.apollo11.world.MoonDimension;
-import pl.peterwolf.apollo11.world.MoonTerrain;
 
 public final class LaunchSequence {
     private static final int COUNTDOWN_TICKS = 100;
@@ -159,7 +158,6 @@ public final class LaunchSequence {
         }
 
         moon.getChunk(0, 0);
-        MoonTerrain.prepareLandingArea(moon);
         boolean arrived = player.teleportTo(moon, 0.5, 6.0, 0.5, Set.of(), player.getYRot(), player.getXRot(), false);
         if (arrived) {
             String resultKey = switch (outcome) {
