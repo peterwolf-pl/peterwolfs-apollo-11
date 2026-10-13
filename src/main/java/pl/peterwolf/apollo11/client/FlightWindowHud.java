@@ -7,7 +7,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import pl.peterwolf.apollo11.Apollo11;
 import pl.peterwolf.apollo11.network.FlightStartPayload;
@@ -77,7 +76,7 @@ public final class FlightWindowHud {
         drawEarth(graphics, centerX, centerY, portholeRadius, progress);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, COCKPIT_SPRITE,
                 panelLeft, panelTop, panelWidth, panelHeight);
-        drawFlightReadout(graphics, client, width, height, progress);
+        drawFlightReadout(graphics, client, panelLeft, panelTop, panelScale, progress);
     }
 
     private static void drawStars(GuiGraphicsExtractor graphics, int centerX, int centerY, float portholeRadius) {
@@ -99,29 +98,23 @@ public final class FlightWindowHud {
                 centerX - globeSize / 2, centerY - globeSize / 2, globeSize, globeSize);
     }
 
-    private static void drawFlightReadout(GuiGraphicsExtractor graphics, Minecraft client, int width, int height,
-                                          float progress) {
-        int left = (int) (width * 0.735F);
-        int top = (int) (height * 0.075F);
-        int right = (int) (width * 0.925F);
-        int bottom = (int) (height * 0.34F);
-        graphics.fill(left, top, right, bottom, 0xE6101C20);
+    private static void drawFlightReadout(GuiGraphicsExtractor graphics, Minecraft client, int panelLeft,
+                                          int panelTop, float panelScale, float progress) {
+        var pose = graphics.pose();
+        pose.pushMatrix();
+        pose.translate(panelLeft, panelTop);
+        pose.scale(panelScale, panelScale);
 
+        graphics.fill(756, 51, 892, 112, 0xFF07100A);
+        graphics.text(client.font, "PROG   VERB   NOUN", 761, 54, 0xFF83A878);
+        graphics.text(client.font, "00     --     --", 761, 66, 0xFFA9E594);
+        graphics.text(client.font, "COAST   T+" + String.format("%02d", Math.min(5, elapsedTicks / 20)),
+                761, 80, 0xFFB5EBA0);
         int earthRange = Math.round(384_400 * progress);
-        int seconds = Math.min(5, elapsedTicks / 20);
-        graphics.text(client.font, Component.translatable("hud.peterwolfs_apollo11.flight.title"),
-                left + 6, top + 6, 0xFFE1F4FA);
-        graphics.text(client.font, Component.translatable("hud.peterwolfs_apollo11.flight.range", earthRange),
-                left + 6, top + 22, 0xFF8FD5E8);
-        graphics.text(client.font,
-                Component.translatable("hud.peterwolfs_apollo11.flight.timer", String.format("%02d", seconds)),
-                left + 6, top + 38, 0xFFDAE9ED);
+        graphics.text(client.font, String.format("RNG %06d KM", earthRange), 761, 94, 0xFFB5EBA0);
+        graphics.fill(761, 106, 887, 109, 0xFF283B2B);
+        graphics.fill(761, 106, 761 + (int) (126 * progress), 109, 0xFF9BD785);
 
-        int barLeft = left + 6;
-        int barRight = right - 6;
-        int barY = top + 56;
-        graphics.fill(barLeft, barY, barRight, barY + 4, 0xFF233842);
-        graphics.fill(barLeft, barY, barLeft + (int) ((barRight - barLeft) * progress),
-                barY + 4, 0xFF57C6E7);
+        pose.popMatrix();
     }
 }

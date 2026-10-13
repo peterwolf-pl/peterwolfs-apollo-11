@@ -8,7 +8,7 @@ project_cycle:
 active_flow: orchestrate_project
 active_epic_id: null
 handoff:
-  last_step_completed: "Replaced three landing-time craters with deterministic chunk-generation crater fields: varied small/medium/rare-large sizes, seamless neighboring-cell candidates, and a clear 32-block landing radius. Replaced the full-screen flight backdrop with an instrument cockpit and transparent circular porthole; Earth and stars render behind the opening, and a uniform cover scale preserves its circular shape. Client GameTest validates crater density/size classes/seed repeatability and porthole alpha; ./gradlew runClientGameTest passes. ELABORATE and other mission features stay open"
+  last_step_completed: "Replaced three landing-time craters with deterministic chunk-generation crater fields: varied small/medium/rare-large sizes, seamless neighboring-cell candidates, and a clear 32-block landing radius. Replaced the full-screen flight backdrop with an instrument cockpit and transparent circular porthole; Earth and stars render behind the opening, and a uniform cover scale preserves its circular shape. Added a DSKY-inspired PROG/VERB/NOUN screen and keypad readout, without claiming to emulate the AGC. Client GameTest validates crater density/size classes/seed repeatability, porthole alpha, and cockpit assets; ./gradlew runClientGameTest passes. ELABORATE and other mission features stay open"
   open_decisions:
     - "Choose model authoring pipeline; recommended default is Blockbench source with game-native exported models and no runtime modeling dependency"
     - "Define alien behavior and valuable reward"
